@@ -1,0 +1,161 @@
+{
+  "schemaVersion": "3.0.0",
+  "collections": [
+    {
+      "meta": {
+        "id": "loculus-agent-store",
+        "title": "Loculus agent store datasets",
+        "description": "Minimal Nextclade datasets staged by automation for Loculus testing.",
+        "maintainers": [
+          {
+            "name": "Loculus project",
+            "url": "https://github.com/loculus-project"
+          }
+        ],
+        "urls": [
+          {
+            "name": "source",
+            "url": "https://github.com/loculus-project/agent_store"
+          }
+        ]
+      },
+      "datasets": [
+        {
+          "path": "orthohantavirus/L",
+          "shortcuts": [
+            "hantavirus/L",
+            "orthohantavirus/L"
+          ],
+          "enabled": true,
+          "attributes": {
+            "name": "Orthohantavirus L segment",
+            "reference name": "Andes virus segment L",
+            "reference accession": "NC_003468.2"
+          },
+          "files": {
+            "changelog": "CHANGELOG.md",
+            "examples": "sequences.fasta",
+            "genomeAnnotation": "genome_annotation.gff3",
+            "pathogenJson": "pathogen.json",
+            "readme": "README.md",
+            "reference": "reference.fasta"
+          },
+          "capabilities": {
+            "qc": [
+              "frameShifts",
+              "missingData",
+              "mixedSites",
+              "stopCodons"
+            ]
+          },
+          "versions": [
+            {
+              "tag": "unreleased",
+              "compatibility": {
+                "cli": "3.0.0-alpha.0",
+                "web": "3.0.0-alpha.0"
+              }
+            }
+          ],
+          "version": {
+            "tag": "unreleased",
+            "compatibility": {
+              "cli": "3.0.0-alpha.0",
+              "web": "3.0.0-alpha.0"
+            }
+          }
+        },
+        {
+          "path": "orthohantavirus/M",
+          "shortcuts": [
+            "hantavirus/M",
+            "orthohantavirus/M"
+          ],
+          "enabled": true,
+          "attributes": {
+            "name": "Orthohantavirus M segment",
+            "reference name": "Andes virus segment M",
+            "reference accession": "NC_003467.2"
+          },
+          "files": {
+            "changelog": "CHANGELOG.md",
+            "examples": "sequences.fasta",
+            "genomeAnnotation": "genome_annotation.gff3",
+            "pathogenJson": "pathogen.json",
+            "readme": "README.md",
+            "reference": "reference.fasta"
+          },
+          "capabilities": {
+            "qc": [
+              "frameShifts",
+              "missingData",
+              "mixedSites",
+              "stopCodons"
+            ]
+          },
+          "versions": [
+            {
+              "tag": "unreleased",
+              "compatibility": {
+                "cli": "3.0.0-alpha.0",
+                "web": "3.0.0-alpha.0"
+              }
+            }
+          ],
+          "version": {
+            "tag": "unreleased",
+            "compatibility": {
+              "cli": "3.0.0-alpha.0",
+              "web": "3.0.0-alpha.0"
+            }
+          }
+        },
+        {
+          "path": "orthohantavirus/S",
+          "shortcuts": [
+            "hantavirus/S",
+            "orthohantavirus/S"
+          ],
+          "enabled": true,
+          "attributes": {
+            "name": "Orthohantavirus S segment",
+            "reference name": "Andes virus segment S",
+            "reference accession": "NC_003466.1"
+          },
+          "files": {
+            "changelog": "CHANGELOG.md",
+            "examples": "sequences.fasta",
+            "genomeAnnotation": "genome_annotation.gff3",
+            "pathogenJson": "pathogen.json",
+            "readme": "README.md",
+            "reference": "reference.fasta"
+          },
+          "capabilities": {
+            "qc": [
+              "frameShifts",
+              "missingData",
+              "mixedSites",
+              "stopCodons"
+            ]
+          },
+          "versions": [
+            {
+              "tag": "unreleased",
+              "compatibility": {
+                "cli": "3.0.0-alpha.0",
+                "web": "3.0.0-alpha.0"
+              }
+            }
+          ],
+          "version": {
+            "tag": "unreleased",
+            "compatibility": {
+              "cli": "3.0.0-alpha.0",
+              "web": "3.0.0-alpha.0"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

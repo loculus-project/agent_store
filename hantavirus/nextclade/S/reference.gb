@@ -1,0 +1,97 @@
+LOCUS       NC_003466               1871 bp    cRNA    linear   VRL 13-AUG-2018
+DEFINITION  Andes virus segment S, complete sequence.
+ACCESSION   NC_003466
+VERSION     NC_003466.1
+DBLINK      BioProject: PRJNA485481
+KEYWORDS    RefSeq.
+SOURCE      Orthohantavirus andesense
+  ORGANISM  Orthohantavirus andesense
+            Viruses; Riboviria; Orthornavirae; Negarnaviricota;
+            Polyploviricotina; Bunyaviricetes; Elliovirales; Hantaviridae;
+            Mammantavirinae; Orthohantavirus.
+REFERENCE   1  (bases 1 to 1871)
+  AUTHORS   Meissner,J., Rowe,J., Borucki,M. and St Jeor,S.
+  TITLE     Complete nucleotide sequence of a Chilean hantavirus
+  JOURNAL   Virus Res. 89 (1), 131 (2002)
+   PUBMED   12367756
+REFERENCE   2  (bases 47 to 1475)
+  AUTHORS   Bohlman,M.C., Morzunov,S.P., Meissner,J., Taylor,M.B., Ishibashi,K.,
+            Rowe,J., Levis,S., Enria,D. and St Jeor,S.C.
+  TITLE     Analysis of hantavirus genetic diversity in Argentina: S
+            segment-derived phylogeny
+  JOURNAL   J. Virol. 76 (8), 3765-3773 (2002)
+   PUBMED   11907216
+REFERENCE   3  (bases 1 to 1871)
+  AUTHORS   Meissner,J.D. and St. Jeor,S.C.
+  TITLE     Hantavirus S segment nucleocapsid protein gene
+  JOURNAL   Unpublished
+REFERENCE   4  (bases 1 to 1871)
+  CONSRTM   NCBI Genome Project
+  TITLE     Direct Submission
+  JOURNAL   Submitted (27-MAR-2002) National Center for Biotechnology
+            Information, NIH, Bethesda, MD 20894, USA
+REFERENCE   5  (bases 1 to 1871)
+  AUTHORS   Meissner,J.D. and St. Jeor,S.C.
+  TITLE     Direct Submission
+  JOURNAL   Submitted (01-AUG-2000) Microbiology, University of Nevada-Reno,
+            FA310/MS200, Reno, NV 89557, USA
+COMMENT     PROVISIONAL REFSEQ: This record has not yet been subject to final
+            NCBI review. The reference sequence was derived from AF291702.
+            COMPLETENESS: full length.
+FEATURES             Location/Qualifiers
+     source          1..1871
+                     /organism="Orthohantavirus andesense"
+                     /mol_type="viral cRNA"
+                     /strain="Chile-9717869"
+                     /db_xref="taxon:1980456"
+                     /segment="S"
+     CDS             43..1329
+                     /ID="cds-NP_604471.1"
+                     /Dbxref="GenBank:NP_604471.1,GeneID:991232"
+                     /Name="N"
+                     /gbkey="CDS"
+                     /locus_tag="N"
+                     /product="nucleocapsid protein"
+                     /protein_id="NP_604471.1"
+     CDS             122..313
+                     /ID="cds-YP_004928151.1"
+                     /Dbxref="GenBank:YP_004928151.1,GeneID:11293630"
+                     /Name="NSs"
+                     /gbkey="CDS"
+                     /locus_tag="NSs"
+                     /product="putative nonstructural protein"
+                     /protein_id="YP_004928151.1"
+ORIGIN
+        1 tagtagtaga ctccttgaga agctactgct gcgaaagctg gaatgagcac cctccaagaa
+       61 ttgcaggaaa acatcacagc acacgaacaa cagctcgtga ctgctcggca aaagcttaag
+      121 gatgccgaga aggcagtgga ggtggacccg gatgacgtta acaagagcac actacaaagt
+      181 agacgggcag ctgtgtctac attggagacc aaactcggag aacttaagag gcaacttgca
+      241 gatttggtgg cagctcaaaa attggctaca aaaccagttg atccaacagg gcttgagcct
+      301 gatgatcatc taaaggaaaa atcatctctg agatatggga atgtcctgga tgttaattca
+      361 attgatttgg aagaaccgag tggacagact gctgattgga aggctatagg agcatacatc
+      421 ttagggtttg caattccgat catcctaaag gccttataca tgctgtcaac ccgtgggaga
+      481 caaactgtga aagacaacaa agggaccagg ataaggttta aggatgattc ttcctttgaa
+      541 gaagtcaatg ggatacgtaa accaaaacac ctttacgtct caatgccaac tgcacagtcc
+      601 actatgaagg ctgaagaaat cacgccagga cgatttagga caattgcttg tggccttttt
+      661 ccagcacagg tcaaagcccg aaatataata agtcctgtaa tgggagtaat tggatttggc
+      721 ttctttgtaa aggattggat ggatcggata gaagagtttc tggctgcaga gtgtccattc
+      781 ttacctaagc caaaggtcgc ctcagaagcc ttcatgtcta ccaataagat gtattttctg
+      841 aacagacaga gacaagtcaa tgaatctaag gttcaagata ttatcgattt gatagaccat
+      901 gctgagaccg agtctgctac cttgtttaca gagattgcaa caccccattc agtctgggtg
+      961 tttgcatgtg cacctgaccg gtgccctcca actgcattgt atgttgcagg ggtaccggaa
+     1021 cttggtgcat ttttttctat ccttcaggac atgcgtaata ccatcatggc atctaaatct
+     1081 gtagggactg cagaagagaa gctaaagaaa aaatctgcct tctaccaatc atacctaaga
+     1141 aggacacaat ctatgggaat ccaactggac cagaagatca taatccttta catgctatca
+     1201 tggggtaaag aagctgtgaa tcacttccat cttggtgatg atatggaccc tgaactcagg
+     1261 cagctagcac aatctctgat cgatactaag gtgaaggaga tctccaacca agagccactt
+     1321 aagttgtagg tgcttaatga aatcatgatt gaagaaagac tttccgggct tgtgccacat
+     1381 attaatcatc tcaggaccta tccttaatgt gattaatagg gttttattat aagggcagtt
+     1441 aatggggttg gttactaact atgggtaagg gttcattacc atttttgcac tagggttaaa
+     1501 gggccactac attgtatttg cactaaggga aatgggaggt gggttagttt gtatttagtt
+     1561 gttaagtttt ttataatcat atgttaatga ggaattagct atatgatatc actgattgat
+     1621 tggctatttt taggttaagt aattgtagtt aaatagttgt gttaagttag tatgttaagg
+     1681 tttataggtt aagatttact aacaatcata ttatgtcatt agatgtaaat ttcattcctg
+     1741 gcttgcttct gctttcgcat tgctaaccta caacaagact acctcaccca ctacccctcc
+     1801 cctattctac ctcaacacat actacctcac atttgatttt tcttgattgc ttttcaagga
+     1861 gcatactact a
+//
