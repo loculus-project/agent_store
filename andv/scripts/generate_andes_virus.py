@@ -106,7 +106,7 @@ SEGMENTS: tuple[SegmentSpec, ...] = (
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--output-dir", default="hanta-andes", type=Path)
+    parser.add_argument("--output-dir", default="andv", type=Path)
     parser.add_argument("--email", default=DEFAULT_EMAIL)
     parser.add_argument("--image-url", default=DEFAULT_IMAGE_URL)
     parser.add_argument(
@@ -174,7 +174,7 @@ def write_nextclade_dataset(output_dir: Path, spec: SegmentSpec, record: SeqReco
     for filename, content in files.items():
         write_text(dataset_dir / filename, content)
 
-    release_dir = output_dir / "nextclade_data" / "hanta-andes" / spec.segment / "unreleased"
+    release_dir = output_dir / "nextclade_data" / "andv" / spec.segment / "unreleased"
     release_dir.mkdir(parents=True)
     with zipfile.ZipFile(release_dir / "dataset.zip", "w", compression=zipfile.ZIP_DEFLATED) as archive:
         for filename in (
@@ -220,8 +220,8 @@ def write_nextclade_index(path: Path) -> None:
     for spec in SEGMENTS:
         datasets.append(
             {
-                "path": f"hanta-andes/{spec.segment}",
-                "shortcuts": [f"hanta-andes/{spec.segment}"],
+                "path": f"andv/{spec.segment}",
+                "shortcuts": [f"andv/{spec.segment}"],
                 "enabled": True,
                 "attributes": {
                     "name": f"Andes virus {spec.segment} segment",
