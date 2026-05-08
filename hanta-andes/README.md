@@ -1,11 +1,14 @@
-# Andes virus assets
+# Andes Virus [Hantavirus] asset generator
 
-This directory contains Andes virus reference assets for Loculus and Pathoplexus experiments.
+This directory contains the generator for Andes Virus reference assets used by Pathoplexus.
+The generated assets are served from the Pathoplexus reference store:
+
+https://pathoplexus.github.io/reference_store/hanta-andes/
 
 Regenerate the directory with:
 
 ```bash
-python hanta-andes/scripts/generate_andes_virus.py --output-dir hanta-andes
+python hanta-andes/scripts/generate_andes_virus.py --output-dir /tmp/hanta-andes
 ```
 
 The script requires `biopython`. Minimizer generation uses

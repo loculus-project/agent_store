@@ -252,7 +252,7 @@ def write_nextclade_index(path: Path) -> None:
                         "title": "Loculus agent store datasets",
                         "description": "Minimal Nextclade datasets staged by automation for Loculus testing.",
                         "maintainers": [{"name": "Loculus project", "url": "https://github.com/loculus-project"}],
-                        "urls": [{"name": "source", "url": "https://github.com/loculus-project/agent_store"}],
+                        "urls": [{"name": "source", "url": "https://github.com/pathoplexus/reference_store"}],
                     },
                     "datasets": datasets,
                 }
