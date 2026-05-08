@@ -21,9 +21,9 @@
       },
       "datasets": [
         {
-          "path": "andes-virus/L",
+          "path": "hanta-andes/L",
           "shortcuts": [
-            "andes-virus/L"
+            "hanta-andes/L"
           ],
           "enabled": true,
           "attributes": {
@@ -65,9 +65,9 @@
           }
         },
         {
-          "path": "andes-virus/M",
+          "path": "hanta-andes/M",
           "shortcuts": [
-            "andes-virus/M"
+            "hanta-andes/M"
           ],
           "enabled": true,
           "attributes": {
@@ -109,9 +109,9 @@
           }
         },
         {
-          "path": "andes-virus/S",
+          "path": "hanta-andes/S",
           "shortcuts": [
-            "andes-virus/S"
+            "hanta-andes/S"
           ],
           "enabled": true,
           "attributes": {

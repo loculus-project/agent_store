@@ -5,7 +5,7 @@ This directory contains Andes virus reference assets for Loculus and Pathoplexus
 Regenerate the directory with:
 
 ```bash
-python andes-virus/scripts/generate_andes_virus.py --output-dir andes-virus
+python hanta-andes/scripts/generate_andes_virus.py --output-dir hanta-andes
 ```
 
 The script requires `biopython`. Minimizer generation uses
