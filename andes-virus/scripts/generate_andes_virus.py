@@ -3,7 +3,8 @@
 
 The script fetches the three RefSeq records used for Andes virus, writes
 headerless reference and gene sequence files, creates minimal Nextclade
-datasets, builds a segment minimizer, and writes the dataset-server index.
+datasets, builds a segment minimizer with loculus-project/nextclade-sort-minimizers,
+and writes the dataset-server index.
 """
 
 from __future__ import annotations
@@ -12,7 +13,9 @@ import argparse
 import copy
 import json
 import shutil
+import subprocess
 import sys
+import tempfile
 import urllib.request
 import zipfile
 from dataclasses import dataclass
@@ -20,23 +23,20 @@ from pathlib import Path
 from textwrap import wrap
 
 try:
-    import numpy as np
     from Bio import Entrez, SeqIO
-    from Bio.Seq import Seq
     from Bio.SeqRecord import SeqRecord
 except ImportError as error:  # pragma: no cover
-    raise SystemExit(
-        "Missing dependencies. Install with: python -m pip install biopython numpy"
-    ) from error
+    raise SystemExit("Missing dependencies. Install with: python -m pip install biopython") from error
 
 
 TAXON_ID = 1980456
 DEFAULT_EMAIL = "loculus-agent@example.com"
-DEFAULT_IMAGE_URL = "http://theo:8765/copper_r.png"
+DEFAULT_IMAGE_URL = "http://theo:8765/viridis_invert.png"
 DATASET_COMPATIBILITY = {"cli": "3.0.0-alpha.0", "web": "3.0.0-alpha.0"}
-MINIMIZER_ALGO_VERSION = "1"
-MINIMIZER_JSON_SCHEMA_VERSION = "3.0.0"
-MINIMIZER_K = 17
+DEFAULT_MINIMIZER_SCRIPT_URL = (
+    "https://raw.githubusercontent.com/loculus-project/nextclade-sort-minimizers/"
+    "main/scripts/create_minimizer_index.py"
+)
 
 
 @dataclass(frozen=True)
@@ -109,6 +109,14 @@ def main() -> None:
     parser.add_argument("--output-dir", default="andes-virus", type=Path)
     parser.add_argument("--email", default=DEFAULT_EMAIL)
     parser.add_argument("--image-url", default=DEFAULT_IMAGE_URL)
+    parser.add_argument(
+        "--minimizer-script",
+        default=DEFAULT_MINIMIZER_SCRIPT_URL,
+        help=(
+            "Path or URL for loculus-project/nextclade-sort-minimizers "
+            "scripts/create_minimizer_index.py"
+        ),
+    )
     parser.add_argument("--skip-image", action="store_true")
     parser.add_argument("--threshold", default=32, type=int)
     args = parser.parse_args()
@@ -133,9 +141,14 @@ def main() -> None:
             write_text(output_dir / "genes" / f"{gene.name}.fasta", extract_cds_translation(record, gene))
 
     write_nextclade_index(output_dir / "nextclade_data" / "index.json")
-    write_minimizer(output_dir / "segment-minimizer.json", segment_records, args.threshold)
+    write_minimizer(
+        output_dir / "segment-minimizer.json",
+        segment_records,
+        args.threshold,
+        args.minimizer_script,
+    )
     if not args.skip_image:
-        image_path = output_dir / "images" / "copper_r.png"
+        image_path = output_dir / "images" / "viridis_invert.png"
         image_path.parent.mkdir()
         download_file(args.image_url, image_path)
 
@@ -368,84 +381,54 @@ def gene_id_from_feature(feature) -> str:
     raise ValueError(f"Missing GeneID for {first(feature.qualifiers, 'protein_id')}")
 
 
-def write_minimizer(path: Path, records_by_segment: dict[str, SeqRecord], threshold: int) -> None:
-    cutoff = 1 << threshold
-    refs = {
-        segment: SeqRecord(Seq(str(records_by_segment[segment].seq).upper()), id=segment, description="")
-        for segment in ("L", "M", "S")
-    }
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(serialize_ref_search_index(make_ref_search_index(refs, cutoff))), encoding="utf-8")
-
-
-def make_ref_search_index(refs: dict[str, SeqRecord], cutoff: int) -> dict:
-    minimizers_by_reference = []
-    for name, ref in sorted(refs.items()):
-        minimizers = get_ref_search_minimizers(ref, cutoff)
-        minimizers_by_reference.append(
-            {
-                "minimizers": minimizers,
-                "meta": {"name": name, "length": len(ref.seq), "nMinimizers": len(minimizers)},
-            }
+def write_minimizer(
+    path: Path,
+    records_by_segment: dict[str, SeqRecord],
+    threshold: int,
+    minimizer_script: str,
+) -> None:
+    with tempfile.TemporaryDirectory() as tmpdir:
+        tmp_path = Path(tmpdir)
+        references_fasta = tmp_path / "references.fasta"
+        references_fasta.write_text(
+            "".join(
+                format_fasta(segment, "", str(records_by_segment[segment].seq).upper(), line_width=80)
+                for segment in ("L", "M", "S")
+            ),
+            encoding="utf-8",
         )
-    index = {"minimizers": {}, "references": []}
-    for ref_index, minimizer_set in enumerate(minimizers_by_reference):
-        for minimizer in minimizer_set["minimizers"]:
-            index["minimizers"].setdefault(minimizer, []).append(ref_index)
-        index["references"].append(minimizer_set["meta"])
-    normalization = np.array([x["length"] / x["nMinimizers"] for x in index["references"]])
-    return {
-        "schemaVersion": MINIMIZER_JSON_SCHEMA_VERSION,
-        "version": MINIMIZER_ALGO_VERSION,
-        "params": {"k": MINIMIZER_K, "cutoff": cutoff},
-        **index,
-        "normalization": normalization,
-    }
+        config_file = tmp_path / "config.yaml"
+        config_file.write_text(
+            "references:\n  L: NC_003468.2\n  M: NC_003467.2\n  S: NC_003466.1\n"
+            f"threshold: {threshold}\n",
+            encoding="utf-8",
+        )
+        script_path = resolve_minimizer_script(minimizer_script, tmp_path)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        subprocess.run(
+            [
+                sys.executable,
+                str(script_path),
+                "--references-fasta",
+                str(references_fasta),
+                "--minimizer-json",
+                str(path),
+                "--config-file",
+                str(config_file),
+            ],
+            check=True,
+        )
 
 
-def get_ref_search_minimizers(seq: SeqRecord, cutoff: int) -> np.ndarray:
-    seq_str = str(seq.seq).upper().replace("-", "")
-    minimizers = []
-    for i in range(len(seq_str) - MINIMIZER_K):
-        minimizer_hash = get_hash(seq_str[i : i + MINIMIZER_K], cutoff)
-        if minimizer_hash < cutoff:
-            minimizers.append(minimizer_hash)
-    return np.unique(minimizers)
-
-
-def get_hash(kmer: str, cutoff: int) -> int:
-    value = 0
-    offset = 0
-    for index, nuc in enumerate(kmer):
-        if index % 3 == 2:
-            continue
-        if nuc not in "ACGT":
-            return cutoff + 1
-        if nuc in "AC":
-            value += 1 << offset
-        if nuc in "AT":
-            value += 1 << (offset + 1)
-        offset += 2
-    return invertible_hash(value)
-
-
-def invertible_hash(value: int) -> int:
-    mask = (1 << 32) - 1
-    value = (~value + (value << 21)) & mask
-    value = value ^ (value >> 24)
-    value = (value + (value << 3) + (value << 8)) & mask
-    value = value ^ (value >> 14)
-    value = (value + (value << 2) + (value << 4)) & mask
-    value = value ^ (value >> 28)
-    value = (value + (value << 31)) & mask
-    return value
-
-
-def serialize_ref_search_index(index: dict) -> dict:
-    serialized = copy.deepcopy(index)
-    serialized["minimizers"] = {str(key): value for key, value in serialized["minimizers"].items()}
-    serialized["normalization"] = serialized["normalization"].tolist()
-    return serialized
+def resolve_minimizer_script(minimizer_script: str, tmp_path: Path) -> Path:
+    if minimizer_script.startswith(("http://", "https://")):
+        script_path = tmp_path / "create_minimizer_index.py"
+        download_file(minimizer_script, script_path)
+        return script_path
+    script_path = Path(minimizer_script)
+    if not script_path.exists():
+        raise FileNotFoundError(f"Minimizer script does not exist: {script_path}")
+    return script_path
 
 
 def format_fasta(identifier: str, description: str, sequence: str, line_width: int | None = None) -> str:
