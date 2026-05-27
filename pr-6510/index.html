@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PR #6510 visual-regression review — Loculus</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { font: 16px/1.55 system-ui, sans-serif; max-width: 1100px; margin: 2rem auto; padding: 0 1rem; }
+  h1 { margin-bottom: 0.2rem; }
+  .lede { color: #555; margin-top: 0; }
+  h2 { margin-top: 2.4rem; border-bottom: 1px solid #ddd; padding-bottom: .25rem; }
+  h3 { margin-top: 1.8rem; }
+  .meta { background: #f3f5f8; padding: .8rem 1rem; border-radius: 6px; font-size: .92rem; }
+  .meta code { background: #e6eaef; padding: 1px 4px; border-radius: 3px; }
+  .finding { border-left: 4px solid #b88; background: #fbf6f6; padding: .6rem 1rem; margin: 1rem 0; border-radius: 0 6px 6px 0; }
+  .finding.minor { border-color: #d9b86b; background: #fbf7eb; }
+  .finding.notbug { border-color: #6c9; background: #effaf5; }
+  .badge { display: inline-block; font-size: .72rem; padding: 1px 7px; border-radius: 10px; vertical-align: middle; font-weight: 600; letter-spacing: .03em; }
+  .badge.minor { background: #e9d496; color: #5b4505; }
+  .badge.notbug { background: #b8e5d0; color: #1a4d36; }
+  figure { margin: .8rem 0 1.6rem; }
+  figure img { max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 4px; background: #fff; }
+  figcaption { font-size: .85rem; color: #666; margin-top: .35rem; }
+  .label-row { display: flex; gap: 0; font-size: .75rem; color: #888; margin-bottom: 2px; font-weight: 600; letter-spacing: .04em; }
+  .label-row span { flex: 1; }
+  ul.checked li { margin-bottom: .25rem; }
+  details { margin: 1rem 0; }
+  details summary { cursor: pointer; font-weight: 600; padding: .4rem .6rem; background: #eef1f5; border-radius: 4px; }
+  details[open] summary { background: #dde3eb; }
+  .grid { display: grid; gap: 1.4rem; margin-top: 1rem; }
+  table { border-collapse: collapse; margin: 1rem 0; }
+  td, th { border: 1px solid #ccc; padding: 4px 10px; text-align: left; font-size: .9rem; }
+  th { background: #f0f3f6; }
+  hr { border: 0; border-top: 1px solid #ccc; margin: 3rem 0 1rem; }
+  footer { color: #777; font-size: .82rem; }
+</style>
+</head>
+<body>
+
+<h1>PR #6510 — visual regression review</h1>
+<p class="lede"><a href="https://github.com/loculus-project/loculus/pull/6510">chore(website): migrate tailwind to v4, daisyui to v5 and flowbite to v0.12</a></p>
+
+<div class="meta">
+  <b>Method:</b> Headless Chrome screenshots of ~17 pages plus 5 interactive states on
+  <code>main.loculus.org</code> (baseline) vs <code>worktree-tailwind-v4-fres.loculus.org</code> (PR preview),
+  diffed pixel-by-pixel and reviewed by hand. Caveat: the two environments have different sequence data,
+  so list/table contents differ even when the chrome is unchanged — judgements below are about layout, sizing
+  and styling, not row contents.<br><br>
+  <b>TL;DR:</b> Migration is clean. No layout breakage, no missing features.
+  Four small cosmetic differences worth a glance, and one apparent regression
+  (the Keycloak login page) that is actually a preview-environment problem, not a PR regression.
+</div>
+
+<h2>Findings</h2>
+
+<div class="finding minor">
+  <span class="badge minor">minor / cosmetic</span>
+  <h3>1. LAPIS query-engine buttons are shorter on the API docs page</h3>
+  <p>On <code>/api-documentation</code> the pill buttons in the "LAPIS query engines" section have less vertical
+  padding in the PR. The "View backend API documentation" button is also slightly smaller. Looks like a DaisyUI v5
+  default-size change for <code>.btn</code>. Cosmetic; nothing is broken.</p>
+  <div class="label-row"><span>MAIN</span><span>PR</span></div>
+  <figure><img src="img/01-api-docs-button-padding.png" alt="LAPIS buttons side by side"></figure>
+</div>
+
+<div class="finding minor">
+  <span class="badge minor">minor / cosmetic</span>
+  <h3>2. "Organisms" dropdown trigger gets a more prominent border</h3>
+  <p>In the desktop header, the closed-state "Organisms ▾" button now shows a visible border / button outline.
+  Probably a Tailwind v4 outline/focus-ring change.</p>
+  <div class="label-row"><span>MAIN</span><span>PR</span></div>
+  <figure><img src="img/02-organisms-dropdown-border.png" alt="Organisms dropdown trigger side by side"></figure>
+</div>
+
+<div class="finding minor">
+  <span class="badge minor">minor / cosmetic</span>
+  <h3>3. Mobile sandwich menu items are more spaced out</h3>
+  <p>At 390 px width, the rows in the off-canvas mobile menu have more vertical spacing in the PR, making
+  the menu noticeably taller. Backdrop overlay still renders correctly (the <code>bg-gray-800/50</code>
+  Tailwind v4 syntax in <code>OffCanvasOverlay.tsx</code> works).</p>
+  <div class="label-row"><span>MAIN</span><span>PR</span></div>
+  <figure><img src="img/03-mobile-menu-spacing.png" alt="Mobile sandwich menu open side by side"></figure>
+</div>
+
+<div class="finding minor">
+  <span class="badge minor">minor / cosmetic</span>
+  <h3>4. Download dialog radio buttons restyled</h3>
+  <p>On the search page → "Download all entries" dialog, the radio-button visuals changed: MAIN shows a recessed
+  inner dot; PR shows a flat filled blue circle with a small white centre. More notable, the disabled child
+  radios (FASTA header style → Accession / Display name) render almost invisibly on PR vs visible-but-greyed
+  on MAIN — worth checking they still convey "disabled but available once parent is selected".</p>
+  <div class="label-row" style="flex-direction:column;gap:0"><span>Top: MAIN &nbsp;·&nbsp; Bottom: PR</span></div>
+  <figure><img src="img/04-download-dialog-radios.png" alt="Download dialog radio buttons stacked"></figure>
+</div>
+
+<div class="finding notbug">
+  <span class="badge notbug">not a PR regression</span>
+  <h3>5. /user shows "We are sorry — An internal server error has occurred"</h3>
+  <p>Visiting <code>/user</code> on the PR preview lands on the Keycloak host
+  (<code>authentication-worktree-tailwind-v4-fres.loculus.org</code>) which is serving an error page instead
+  of the login form. That's the preview's auth deployment, not anything in this PR's website code — but
+  flagging so it doesn't get mistaken for a regression caused by the migration.</p>
+  <div class="label-row"><span>MAIN (Keycloak login)</span><span>PR preview (Keycloak error)</span></div>
+  <figure><img src="img/05-keycloak-error-not-regression.png" alt="User page side by side"></figure>
+</div>
+
+<h2>Pages checked, no visible regression</h2>
+<ul class="checked">
+  <li>Home (desktop &amp; mobile)</li>
+  <li>Organism browse — <code>/cchf</code></li>
+  <li>Search — <code>/cchf/search</code>, <code>/ebola-sudan/search</code>, <code>/cchf-multi-ref/search</code>,
+      <code>/dummy-organism-with-files/search</code>, <code>/cchf/search</code> (mobile)</li>
+  <li>Submission portal — <code>/cchf/submission</code></li>
+  <li>SeqSets — <code>/seqsets</code></li>
+  <li>API documentation — <code>/api-documentation</code> (except finding #1 above)</li>
+  <li>Sequence details — <code>/seq/&lt;id&gt;</code></li>
+  <li>Customize-columns modal, search-filter sidebar, header, footer, demo-environment banner</li>
+</ul>
+
+<details>
+  <summary>Full gallery (all side-by-side comparisons)</summary>
+  <div class="grid">
+    <figure><figcaption><b>Home</b> (desktop) — MAIN vs PR</figcaption><img src="img/gallery-home.png"></figure>
+    <figure><figcaption><b>Home</b> (above-the-fold) — MAIN vs PR</figcaption><img src="img/gallery-home-short.png"></figure>
+    <figure><figcaption><b>API documentation</b> — MAIN vs PR</figcaption><img src="img/gallery-api-docs.png"></figure>
+    <figure><figcaption><b>CCHF organism / browse</b> — MAIN vs PR</figcaption><img src="img/gallery-organism-cchf.png"></figure>
+    <figure><figcaption><b>Ebola Sudan search</b> — MAIN vs PR</figcaption><img src="img/gallery-search-ebola.png"></figure>
+    <figure><figcaption><b>CCHF search</b> (mobile, 390px) — MAIN vs PR</figcaption><img src="img/gallery-search-mobile.png"></figure>
+    <figure><figcaption><b>Multi-ref search</b> — MAIN vs PR</figcaption><img src="img/gallery-multi-ref-search.png"></figure>
+    <figure><figcaption><b>Files-organism search</b> — MAIN vs PR</figcaption><img src="img/gallery-files-organism.png"></figure>
+    <figure><figcaption><b>Sequence details</b> — MAIN vs PR (different IDs because envs have different data)</figcaption><img src="img/gallery-seq-detail.png"></figure>
+    <figure><figcaption><b>Submission portal</b> — MAIN vs PR</figcaption><img src="img/gallery-submission.png"></figure>
+    <figure><figcaption><b>SeqSets landing</b> — MAIN vs PR</figcaption><img src="img/gallery-seqsets.png"></figure>
+    <figure><figcaption><b>Search filter sidebar</b> — MAIN vs PR</figcaption><img src="img/gallery-sidebar-filters.png"></figure>
+    <figure><figcaption><b>Customize-columns modal</b> (top crop) — MAIN over PR</figcaption><img src="img/gallery-customize-columns.png"></figure>
+    <figure><figcaption><b>Tools button</b> (closed) — MAIN vs PR</figcaption><img src="img/gallery-tools-button.png"></figure>
+  </div>
+</details>
+
+<h2>Diff stats</h2>
+<p>Crude pixel-diff (RGB sum &gt; 10 per pixel) across full-page screenshots.
+The high percentages for search/browse pages are dominated by <i>different sequence data</i>
+in the two environments, not visual regressions — see the gallery for confirmation.</p>
+<table>
+  <tr><th>Page</th><th>changed px %</th><th>cause</th></tr>
+  <tr><td>search_cchf_mobile</td><td>13.03 %</td><td>different table rows</td></tr>
+  <tr><td>api_docs</td><td> 9.70 %</td><td>finding #1 (button sizing) + URL string in body</td></tr>
+  <tr><td>user_page</td><td> 8.31 %</td><td>finding #5 (Keycloak — not PR)</td></tr>
+  <tr><td>multi_ref_search</td><td> 6.65 %</td><td>different table rows</td></tr>
+  <tr><td>organism_cchf / search_cchf</td><td> 5.27 %</td><td>different table rows</td></tr>
+  <tr><td>search_ebola</td><td> 1.94 %</td><td>different table rows</td></tr>
+  <tr><td>submission_cchf</td><td> 0.47 %</td><td>tiny anti-alias drift</td></tr>
+  <tr><td>seqsets</td><td> 0.32 %</td><td>tiny anti-alias drift</td></tr>
+  <tr><td>home_mobile, home, files_organism</td><td>&lt; 0.05 %</td><td>essentially identical</td></tr>
+</table>
+
+<hr>
+<footer>
+Generated 2026-05-27 by Claude (Opus 4.7) for review of
+<a href="https://github.com/loculus-project/loculus/pull/6510">loculus-project/loculus#6510</a>.
+Sources of all images and the script used to produce them live in this directory's <code>img/</code>.
+</footer>
+
+</body>
+</html>
